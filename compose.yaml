@@ -2,8 +2,13 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=booking_central'
+      - 'POSTGRES_PASSWORD=onPbNPdcPW7x3K'
+      - 'POSTGRES_USER=booking_central'
     ports:
-      - '5432'
+      - '5432:5432'
+    volumes:
+        - 'postgres_data:/var/lib/postgresql/data'
+
+volumes:
+  postgres_data:
