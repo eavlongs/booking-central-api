@@ -1,11 +1,9 @@
 package com.booking_central.api.repositories;
 
-import com.booking_central.api.models.User;
+import com.booking_central.api.models.Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface ProviderRepository extends JpaRepository<Provider, Integer> {
 }

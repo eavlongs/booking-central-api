@@ -2,27 +2,24 @@ package com.booking_central.api.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.Setter;
 
-import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "user_providers")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProvider {
+@Getter
+@Setter
+public class UserProvider extends BaseDateModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
-    private String userId;
-    private String providerId;
+    private UUID userId;
+    private int providerId;
     private String providerGivenId;
-
-    @CreatedDate
-    private Instant createdAt;
-    @LastModifiedDate
-    private Instant updatedAt;
 }

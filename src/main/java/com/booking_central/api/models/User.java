@@ -4,26 +4,22 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.Setter;
 
-import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class User {
+@Setter
+public class User extends BaseDateModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     private String firstName;
     private String lastName;
-
-    @CreatedDate
-    private Instant createdAt;
-    @LastModifiedDate
-    private Instant updatedAt;
+    private String profilePicture;
 }

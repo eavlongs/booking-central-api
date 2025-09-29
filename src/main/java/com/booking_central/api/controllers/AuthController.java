@@ -1,38 +1,60 @@
 package com.booking_central.api.controllers;
 
-import com.booking_central.api.dto.JwtClaim;
-import com.booking_central.api.models.User;
+import com.booking_central.api.dto.AuthTokens;
+import com.booking_central.api.dto.TokenBody;
+import com.booking_central.api.helpers.ResponseHelper;
 import com.booking_central.api.services.AuthService;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
     @Autowired
     private AuthService authService;
-    
-    @GetMapping("/test")
-    public String test() {
-        User user = new User(UUID.randomUUID().toString(), "Eav Long", "Sok", null, null);
-        return authService.generateAccessToken(user);
+
+    @PostMapping("/request-token")
+    public ResponseEntity<Map<String, Object>> requestToken(@RequestBody TokenBody body) {
+        Optional<AuthTokens> authTokens = authService.requestToken(body);
+
+        if (authTokens.isPresent()) {
+           Map<String, Object> data = Map.of(
+               "access_token", authTokens.get().getAccessToken(),
+               "refresh_token", authTokens.get().getRefreshToken()
+           );
+
+           return ResponseHelper.buildSuccessResponse(data);
+        } else {
+            return ResponseHelper.buildBadRequestResponse("Invalid token");
+        }
     }
 
-    @GetMapping("/claims")
-    public Claims extractClaimsTest(@RequestParam String token) {
-        return authService.extractClaims(token);
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Map<String, Object>> refreshToken(@RequestBody TokenBody body) {
+        Optional<AuthTokens> authTokens = authService.refreshToken(body);
+
+        if (authTokens.isPresent()) {
+           Map<String, Object> data = Map.of(
+               "access_token", authTokens.get().getAccessToken(),
+               "refresh_token", authTokens.get().getRefreshToken()
+           );
+
+           return ResponseHelper.buildSuccessResponse(data);
+        } else {
+            return ResponseHelper.buildBadRequestResponse("Invalid token");
+        }
     }
 
-    @GetMapping("/test-auth")
-    public JwtClaim testAuth(Authentication authentication) {
-        JwtClaim jwtClaim = (JwtClaim) authentication.getPrincipal();
-        return  jwtClaim;
+    @GetMapping("/providers")
+    public ResponseEntity<Map<String, Object>> getProviders() {
+        Map<String, Object> data = Map.of(
+            "providers", authService.getProviders()
+        );
+
+        return ResponseHelper.buildSuccessResponse(data);
     }
 }

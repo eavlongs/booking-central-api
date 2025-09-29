@@ -6,7 +6,9 @@ public enum JwtType {
     @JsonProperty("access_token")
     ACCESS_TOKEN("access_token"),
     @JsonProperty("refresh_token")
-    REFRESH_TOKEN("refresh_token");
+    REFRESH_TOKEN("refresh_token"),
+    @JsonProperty("auth_request")
+    AUTH_REQUEST("auth_request");
 
     private final String text;
 

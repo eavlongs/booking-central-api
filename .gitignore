@@ -37,5 +37,6 @@ out/
 .vscode/
 
 application.properties
+application.yaml
 src/main/resources/private_key.pem
 src/main/resources/public_key.pem

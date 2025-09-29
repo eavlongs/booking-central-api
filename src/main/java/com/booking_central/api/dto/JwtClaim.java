@@ -8,23 +8,28 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter(AccessLevel.PRIVATE)
 public class JwtClaim {
     @NonNull
-    private String id;
+    private UUID id;
     @NonNull
     @JsonProperty("first_name")
     private String firstName;
     @JsonProperty("last_name")
     private String lastName;
+    @JsonProperty
+    private String profilePicture; // can be null
     @NonNull
     private JwtType type;
 
     public JwtClaim(Claims claims) throws IllegalArgumentException, NullPointerException {
-        this.setId(claims.get("id", String.class));
+        this.setId(UUID.fromString(claims.get("id", String.class)));
         this.setFirstName(claims.get("first_name", String.class));
         this.setLastName(claims.get("last_name", String.class));
+        this.setProfilePicture(claims.get("profile_picture", String.class));
         this.setType(claims.get("type", String.class)); // throws illegal argument exception if not valid
     }
 

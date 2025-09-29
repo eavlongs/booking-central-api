@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE "providers"
 (
-    "id"         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "id"         SERIAL PRIMARY KEY,
     "name"       VARCHAR(255) NOT NULL UNIQUE,
     "logo_url"   VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -20,9 +20,9 @@ CREATE TABLE "users"
 
 CREATE TABLE "user_providers"
 (
-    "id"                SERIAL PRIMARY KEY,
+    "id"                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "user_id"           UUID NOT NULL ,
-    "provider_id"       UUID NOT NULL,
+    "provider_id"       INTEGER NOT NULL,
     "provider_given_id" VARCHAR(255) NOT NULL,
     "created_at"        TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at"        TIMESTAMPTZ NOT NULL DEFAULT now(),

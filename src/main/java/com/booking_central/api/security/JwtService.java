@@ -23,19 +23,18 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class JwtService {
     private PrivateKey privateKey;
     private RSAPublicKey publicKey;
-    @Value(AppConfig.jwtRefreshExpiration)
+    @Value(AppConfig.jwtAccessExpiration)
     private String accessTokenExpirationInMinutes;
     @Value(AppConfig.jwtRefreshExpiration)
     private String refreshTokenExpirationInMinutes;
+    @Value(AppConfig.jwtAuthRequestExpiration)
+    private String authRequestTokenExpirationInMinutes;
 
     // RS256 Algorithm implementation
     // https://medium.com/@srivastp/securing-jwt-authentication-in-spring-boot-with-rsa-keys-666b5c467378
@@ -99,9 +98,11 @@ public class JwtService {
         Date expiration;
 
         if (jwtType == JwtType.ACCESS_TOKEN) {
-            expiration = new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpirationInMinutes) * 60 * 1000);
+            expiration = new Date(System.currentTimeMillis() + (long) (Double.parseDouble(accessTokenExpirationInMinutes) * 60 * 1000));
         } else if (jwtType == JwtType.REFRESH_TOKEN) {
-            expiration = new Date(System.currentTimeMillis() + Long.parseLong(refreshTokenExpirationInMinutes) * 60 * 1000);
+            expiration = new Date(System.currentTimeMillis() + (long) (Double.parseDouble(refreshTokenExpirationInMinutes) * 60 * 1000));
+        } else if (jwtType == JwtType.AUTH_REQUEST) {
+            expiration = new Date(System.currentTimeMillis() + (long) (Double.parseDouble(authRequestTokenExpirationInMinutes) * 60 * 1000));
         } else {
             throw new IllegalArgumentException("Invalid JWT type");
         }

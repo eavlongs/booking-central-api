@@ -1,8 +1,10 @@
 package com.booking_central.api.config;
 
+import com.booking_central.api.security.CustomOauthSuccessHandler;
 import com.booking_central.api.security.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,9 +25,23 @@ public class SecurityConfig {
     @Qualifier("delegatedAuthenticationEntryPoint")
     AuthenticationEntryPoint authEntryPoint;
 
+    @Value(AppConfig.oauth2SuccessUrl)
+    private String oauth2SuccessUrl;
+
+    @Value(AppConfig.oauth2FailureUrl)
+    private String oauth2FailureUrl;
+
+    @Autowired
+    private CustomOauthSuccessHandler customOauthSuccessHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.oauth2Login(oauth2 -> oauth2
+//                        .loginPage("oauth2SuccessUrl")
+                        .failureUrl(oauth2FailureUrl)
+                        .successHandler(customOauthSuccessHandler)
+                )
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth

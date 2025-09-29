@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: booking-central
+  datasource:
+    url: jdbc:postgresql://localhost:5432/booking_central
+    username: booking_central
+    password: your-password
+    driver-class-name: org.postgresql.Driver
+  web:
+    resources:
+      add-mappings: false
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+    validate-on-migrate: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: your-client-id
+            client-secret: your-client-secret
+            scope: openid,profile,email
+
+server:
+  port: 8000
+  #servlet:
+  #  context-path: /api/v1
+  error:
+    whitelabel:
+      enabled: false
+    #include-stacktrace: never
+    #include-message: never
+    #include-binding-errors: never
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        security.web.FilterChainProxy: DEBUG
+        security.authentication: DEBUG
+        web.servlet.DispatcherServlet: DEBUG
+        cache: TRACE
+    com:
+      github:
+        benmanes:
+          caffeine: TRACE
+
+app:
+  security:
+    jwt:
+      key:
+        private: private_key.pem
+        public: public_key.pem
+      expiration:
+        access: 360
+        refresh: 43200
+        auth-request: 0.5
+  url:
+    backend: http://localhost:8000
+    backend-prefix: /api/v1
+    backend-with-prefix: ${app.url.backend}${app.url.backend-prefix}
+    frontend: http://localhost:3000
+    frontend-login-page: ${app.url.frontend}/login
+    oauth2-success: ${app.url.frontend}/login-redirect
+    oauth2-failure: ${app.url.frontend-login-page}?error
+  cache:
+    caffeine:
+      names: auth_providers
+      initial-capacity: 5
+      maximum-size: 50
+      expiry-time: 30
